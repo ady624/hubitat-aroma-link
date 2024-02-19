@@ -3,5 +3,27 @@
   "author": "Adrian Caramaliu",
   "minimumHEVersion": "0.0",
   "licenseFile": "https://www.apache.org/licenses/LICENSE-2.0",
-  "dateReleased": "2024-02-18"
+  "dateReleased": "2024-02-18",
+  "apps": [
+    {
+      "id": "93cf2b4d-7e8f-48d8-aef0-a5810051d685",
+      "name": "Aroma-Link Diffuser Integration",
+      "namespace": "ady624",
+      "location": "https://raw.githubusercontent.com/ady624/hubitat-aroma-link/master/aroma-link-integration-app.groovy",
+      "required": false,
+      "oauth": false,
+      "primary": false,
+      "version": "0.1.0"
+    }
+  ],
+  "drivers": [
+    {
+      "id": "5284a7cf-50e3-495e-9936-7910ecb6eaf5",
+      "name": "Aroma-Link Diffuser",
+      "namespace": "ady624",
+      "location": "https://raw.githubusercontent.com/ady624/hubitat-aroma-link/master/aroma-link-diffuser-driver.groovy",
+      "required": true,
+      "version": "1.0"
+    }
+  ]
 }
