@@ -20,18 +20,7 @@ metadata {
     capability "Switch"
     capability "FanControl"
 
-    attribute "firstName", "string"
-    attribute "lastName", "string"
-    attribute "country", "string"
-    attribute "sensorSerialNumber", "string"
-    attribute "sensorActivated", "long"
-    attribute "glucoseTargetLow", "int"
-    attribute "glucoseTargetHigh", "int"
-    attribute "glucoseTimestamp", "long"
-    attribute "glucose", "int"
-    attribute "glucoseTrend", "int"
-    attribute "glucoseTrendArrow", "enum", TREND_ARROWS
-    attribute "glucoseTrendMessage", "enum", TREND_MESSAGES
+    attribute "networkStatus", "enum", ["offline", "online"]
 }
 
   preferences {
@@ -43,16 +32,7 @@ void installed() {
 }
 
 void update(diffuser) {
-    /*
-    updateAttribute("lastName", user.lastName as String)
-    updateAttribute("country", user.country as String)
-    updateAttribute("sensorSerialNumber", user.sensorSerialNumber as String)
-    updateAttribute("sensorActivated", user.sensorActivated as long)
-    updateAttribute("glucoseTargetLow", user.glucoseTargetLow as int)
-    updateAttribute("glucoseTargetHigh", user.glucoseTargetHigh as int)
-    updateAttribute("glucoseTimestamp", user.glucoseTimestamp as long)
-    updateAttribute("glucose", user.glucose as int, "mg/dL")
-    updateAttribute("glucoseTrend", user.glucoseTrend as int)*/
+    updateAttribute("networkStatus", diffuser.onlineStatus ? "online" : "offline")
 }
 
 void updateAttribute(String name, value, unit = null) {
