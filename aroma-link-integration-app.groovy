@@ -35,29 +35,29 @@ String gitBranch() { return "ady624" }
 String getAppImg(imgName) 	{ return "https://raw.githubusercontent.com/${gitBranch()}/hubitat-aroma-link/master/icons/$imgName" }
 
 definition(
-    name: "Aroma-Link Diffuser Integration",
-    namespace: "ady624",
-    author: "Adrian Caramaliu",
-    description: "Integrate Aroma-Link with Hubitat",
-    category: "Integrations",
-    importUrl: "https://github.com/ady624/hubitat-aroma-link.groovy",
-    iconUrl:   "",
-    iconX2Url: "",
-    iconX3Url: ""
+	name: "Aroma-Link Diffuser Integration",
+	namespace: "ady624",
+	author: "Adrian Caramaliu",
+	description: "Integrate Aroma-Link with Hubitat",
+	category: "Integrations",
+	importUrl: "https://github.com/ady624/hubitat-aroma-link.groovy",
+	iconUrl:   "",
+	iconX2Url: "",
+	iconX3Url: ""
 )
 
 preferences {
-    page(name: "pgMain", title: "Aroma-Link Integration")
+	page(name: "pgMain", title: "Aroma-Link Integration")
     page(name: "pgLogin", title: "Aroma-Link Login")
     page(name: "pgLoginFailure", title: "Aroma-Link Integration")
     page(name: "pgUninstall", title: "Uninstall")
 }
 
 def appInfoSect(sect=true)	{
-    def str = ""
-    str += "${app?.name} (v${appVersion()})"
-    str += "\nAuthor: ${appAuthor()}"
-    section() { paragraph str, image: getAppImg("aroma-link@2x.png") }
+	def str = ""
+	str += "${app?.name} (v${appVersion()})"
+	str += "\nAuthor: ${appAuthor()}"
+	section() { paragraph str, image: getAppImg("aroma-link@2x.png") }
 }
 
 def pgMain() {
@@ -105,12 +105,12 @@ def pgMain() {
 def pgLogin(params) {
     state.installMsg = ""
     def showUninstall = username != null && password != null
-    return dynamicPage(name: "pgLogin", title: "Connect to Freestyle Libre LinkUp", nextPage:"pgLoginFailure", uninstall:false, install: false, submitOnChange: true) {
-	section("Credentials"){
-	    input("username", "text", title: "Username", description: "Aroma-Link username")
-	    input("password", "password", title: "Password", description: "Aroma-link password")
+	return dynamicPage(name: "pgLogin", title: "Connect to Freestyle Libre LinkUp", nextPage:"pgLoginFailure", uninstall:false, install: false, submitOnChange: true) {
+		section("Credentials"){
+			input("username", "text", title: "Username", description: "Aroma-Link username")
+			input("password", "password", title: "Password", description: "Aroma-link password")
+		}
 	}
-    }
 }
 
 def pgLoginFailure(){
@@ -119,35 +119,32 @@ def pgLoginFailure(){
         return pgMain()
     }
     else{
-	return dynamicPage(name: "pgLoginFailure", title: "Login Error", install:false, uninstall:false) {
+    	return dynamicPage(name: "pgLoginFailure", title: "Login Error", install:false, uninstall:false) {
             section(""){
                 paragraph "The username or password you entered is incorrect. Go back and try again. "
-	    }
-	}
+			}
+		}
     }
 }
 
 def pgUninstall() {
     def msg = ""
     childDevices.each {
-	try{
-	    deleteChildDevice(it.deviceNetworkId, true)
+		try{
+			deleteChildDevice(it.deviceNetworkId, true)
             msg = "Devices have been removed. Tap remove to complete the process."
 
-	}
-	catch (e) {
-	    log.error "Error deleting ${it.deviceNetworkId}: ${e}"
+		}
+		catch (e) {
+			log.error "Error deleting ${it.deviceNetworkId}: ${e}"
             msg = "There was a problem removing your device(s). Check the IDE logs for details."
+		}
 	}
-    }
 
     return dynamicPage(name: "pgUninstall",  title: "Uninstall", install:false, uninstall:true) {
-        section("") {
-            paragraph WARNING
-        }
         section("Uninstall"){
-	    paragraph msg
-	}
+			paragraph msg
+		}
     }
 }
 
@@ -158,10 +155,10 @@ def versionCompare(deviceName){
         return 'latest'
     }
     if (state.currentVersion[deviceName] == state.latestVersion[deviceName]){
-	return 'latest'
+    	return 'latest'
     }
     else{
-	return "${state.latestVersion[deviceName]} available"
+   		return "${state.latestVersion[deviceName]} available"
     }
 }
 
@@ -181,13 +178,13 @@ def updateVersionInfo(){
 
 def uninstall(){
     getChildDevices().each {
-	try{
-	    deleteChildDevice(it.deviceNetworkId, true)
-	}
-	catch (e) {
+		try{
+			deleteChildDevice(it.deviceNetworkId, true)
+		}
+		catch (e) {
             log.error "Error deleting ${it.deviceNetworkId}: ${e}"
+		}
 	}
-    }
 }
 
 def uninstalled() {
@@ -212,12 +209,12 @@ def String epochToDate( Number Epoch ){
 }
                         
 private login() {
-    if (!state.session || (now() > state.session.expiration)) {
-	log.warn "Token has expired. Logging in again."
+	if (!state.session || (now() > state.session.expiration)) {
+    	log.warn "Token has expired. Logging in again."
         doLogin()
     }
     else{
-	return true;
+    	return true;
     }
 }
 
@@ -228,7 +225,7 @@ private doLogin() {
 
 /* API Methods */
 private getApiHeaders() {
-    headers = [
+	headers = [
         "Accept-Encoding": "gzip",
         "User-Agent": "okhttp/4.5.0",
         "version": "406"
@@ -253,7 +250,7 @@ def doUserNameAuth() {
             ],
             requestContentType: "application/x-www-form-urlencoded"
         ]) { resp ->
-	    if ((resp.status == 200) && resp.data && (resp.data.code == 200)) {
+			if ((resp.status == 200) && resp.data && (resp.data.code == 200)) {
                 state.session = [
                     authToken: resp.data.data.accessToken,
                     expiration: now() + resp.data.data.accessTokenValidity as long,
@@ -276,7 +273,7 @@ def doUserNameAuth() {
 }
 
 def refreshDiffusers(){
-    state.currentVersion = [:]
+	state.currentVersion = [:]
     state.currentVersion['SmartApp'] = appVersion()
     state.diffusers = [:]
     deviceIds = getChildDevices()*.deviceNetworkId
@@ -285,11 +282,9 @@ def refreshDiffusers(){
             uri: BASE_URI, 
             path: PATH_LIST + state.session.userId.toString(),
             headers: getApiHeaders()
-        ]) { resp ->           
-            log.warn(resp.data)
+        ]) { resp ->
             if ((resp.status == 200) && resp.data && (resp.data.code == 200)) {
                 resp.data.data.each { group ->
-                    log.warn(group)
                     if (group.type == "group") {
                         group.children.each { device ->
                             if (device.type == "device") {
@@ -320,7 +315,9 @@ def refreshDiffusers(){
                                     device.update(diffuser)
                                 } else {
                                     log.info "Adding new device for diffuser ${diffuser.name}"
-                                    addChildDevice("ady624", "Aroma-Link Diffuser", diffuserId, ["name": diffuser.name]).update(diffuser)
+                                    dw = addChildDevice("ady624", "Aroma-Link Diffuser", diffuserId, ["name": diffuser.name]).update(diffuser)
+                                    dw.sendEvent([name: "networkStatus", value: "online"])
+
                                 }
                                 deviceIds -= diffuserId
                             }
@@ -336,7 +333,8 @@ def refreshDiffusers(){
     }
 }
 
-private void sendDeviceCommand(long deviceId, String command, int value) {
+private void sendDeviceCommand(DeviceWrapper dw, String command, int value) {
+    long deviceId = dw.getDeviceNetworkId().minus("aroma-link-") as long
     if (login()) {
         httpPost([ 
             uri: BASE_URI, 
@@ -348,29 +346,29 @@ private void sendDeviceCommand(long deviceId, String command, int value) {
                 "${command}": value
             ],
             requestContentType: "application/x-www-form-urlencoded"
-        ]) { resp ->   
-            log.warn("deviceId=${deviceId}, command=${command}, value=${value}, userId=${state.session.userId}")
-            log.warn(getApiHeaders())
-            log.warn(resp.data)
+        ]) { resp ->
+            log.info("Sending command deviceId=${deviceId}, command=${command}, value=${value}, userId=${state.session.userId}")
+            if (resp.status != 200 || resp.data.code != 200) {
+                log.warn("Device ${deviceId} appears offline")
+            }
+            dw.sendEvent([name: "networkStatus", value: resp.status == 200 || resp.data.code != 200 ? "online" : "offline"])
         }
     }
+    dw.sendEvent([name: "networkStatus", value: "offline"])
 }
 
 public void componentRefresh(DeviceWrapper dw) {
     refreshDiffusers()
 }
 
-public void componentOn(DeviceWrapper dw) {
-    long deviceId = dw.getDeviceNetworkId().minus("aroma-link-") as long
-    sendDeviceCommand(deviceId, "onOff", 1)
+public void componentOn(DeviceWrapper dw) {  
+    sendDeviceCommand(dw, "onOff", 1)
 }
 
 public void componentOff(DeviceWrapper dw) {
-    long deviceId = dw.getDeviceNetworkId().minus("aroma-link-") as long
-    sendDeviceCommand(deviceId, "onOff", 0)   
+    sendDeviceCommand(dw, "onOff", 0)   
 }
 
 public void componentSetSpeed(DeviceWrapper dw, speed) {
-    long deviceId = dw.getDeviceNetworkId().minus("aroma-link-") as long
-    sendDeviceCommand(deviceId, "fan", speed == "on" ? 1 : 0)
+    sendDeviceCommand(dw, "fan", speed == "on" ? 1 : 0)
 }
