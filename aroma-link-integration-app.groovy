@@ -353,8 +353,9 @@ private void sendDeviceCommand(DeviceWrapper dw, String command, int value) {
             }
             dw.sendEvent([name: "networkStatus", value: resp.status == 200 || resp.data.code != 200 ? "online" : "offline"])
         }
+    } else {
+        dw.sendEvent([name: "networkStatus", value: "offline"])
     }
-    dw.sendEvent([name: "networkStatus", value: "offline"])
 }
 
 public void componentRefresh(DeviceWrapper dw) {
