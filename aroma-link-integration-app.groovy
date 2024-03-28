@@ -251,8 +251,7 @@ def doUserNameAuth() {
             requestContentType: "application/x-www-form-urlencoded",
             ignoreSSLIssues: true
         ]) { resp ->
-            log.warn resp.data
-			if ((resp.status == 200) && resp.data && (resp.data.code == 200)) {
+	    if ((resp.status == 200) && resp.data && (resp.data.code == 200)) {
                 state.session = [
                     authToken: resp.data.data.accessToken,
                     expiration: now() + resp.data.data.accessTokenValidity as long,
