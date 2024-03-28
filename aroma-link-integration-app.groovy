@@ -28,7 +28,7 @@ import com.hubitat.app.DeviceWrapper
 @Field PATH_DEVICE = "/v1/app/device/"
 @Field PATH_CONTROL = "/v1/app/data/switch"
 
-String appVersion() { return "0.1.0" }
+String appVersion() { return "0.1.1" }
 String appModified() { return "2024-02-18"}
 String appAuthor() { return "Adrian Caramaliu" }
 String gitBranch() { return "ady624" }
@@ -89,8 +89,8 @@ def pgMain() {
             href "pgLogin", title: settings.username, description: "Tap to modify", params: [nextPageName: "pgMain"]
         }
         section("Connected diffusers:"){
-            state.diffusers.each { user -> 
-                paragraph "• ${user.value.firstName} ${user.value.lastName}"
+            state.diffusers.each { diffuser -> 
+                paragraph "• ${diffuser.value.name}"
             }
             
         }
@@ -248,8 +248,10 @@ def doUserNameAuth() {
                 "userName": settings.username,
                 "password": md5(settings.password)
             ],
-            requestContentType: "application/x-www-form-urlencoded"
+            requestContentType: "application/x-www-form-urlencoded",
+            ignoreSSLIssues: true
         ]) { resp ->
+            log.warn resp.data
 			if ((resp.status == 200) && resp.data && (resp.data.code == 200)) {
                 state.session = [
                     authToken: resp.data.data.accessToken,
@@ -281,7 +283,8 @@ def refreshDiffusers(){
         httpGet([ 
             uri: BASE_URI, 
             path: PATH_LIST + state.session.userId.toString(),
-            headers: getApiHeaders()
+            headers: getApiHeaders(),
+            ignoreSSLIssues: true
         ]) { resp ->
             if ((resp.status == 200) && resp.data && (resp.data.code == 200)) {
                 resp.data.data.each { group ->
@@ -345,7 +348,8 @@ private void sendDeviceCommand(DeviceWrapper dw, String command, int value) {
                 "userId": state.session.userId,
                 "${command}": value
             ],
-            requestContentType: "application/x-www-form-urlencoded"
+            requestContentType: "application/x-www-form-urlencoded",
+            ignoreSSLIssues: true
         ]) { resp ->
             log.info("Sending command deviceId=${deviceId}, command=${command}, value=${value}, userId=${state.session.userId}")
             if (resp.status != 200 || resp.data.code != 200) {
